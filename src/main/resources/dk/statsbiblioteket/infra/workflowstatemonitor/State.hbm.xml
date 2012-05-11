@@ -8,9 +8,12 @@
         <id name="id" column="STATE_ID">
             <generator class="native"/>
         </id>
-        <property name="name"/>
         <property name="component"/>
         <property name="state"/>
         <property name="date" type="timestamp"/>
+        <set name="entities" table="ENTITY_STATE" inverse="true" lazy="false">
+            <key column="STATE_ID"/>
+            <many-to-many column="ENTITY_ID" class="Entity"/>
+        </set>
     </class>
 </hibernate-mapping>

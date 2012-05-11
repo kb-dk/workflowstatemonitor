@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="dk.statsbiblioteket.infra.workflowstatemonitor">
+    <class name="Entity" table="ENTITY">
+        <id name="id" column="ENTITY_ID">
+            <generator class="native"/>
+        </id>
+        <property name="name"/>
+        <set name="states" table="ENTITY_STATE">
+            <key column="ENTITY_ID"/>
+            <many-to-many column="STATE_ID" class="State"/>
+        </set>
+    </class>
+</hibernate-mapping>
