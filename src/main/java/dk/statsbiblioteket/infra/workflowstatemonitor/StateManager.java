@@ -18,7 +18,7 @@ public interface StateManager {
      *
      * @return A list of all entites.
      */
-    public List<String> listEntities();
+    public List<Entity> listEntities();
 
     /**
      * List ALL registered states in system.
@@ -30,10 +30,10 @@ public interface StateManager {
     /**
      * List all registered states for the given entities.
      *
-     * @param entity What to list states for
+     * @param entityName What to list states for
      * @return A list of all registered states.
      */
-    public List<State> listStates(String... entity);
+    public List<State> listStates(String entityName);
 
     /**
      * List subset of registered states given by parameters.

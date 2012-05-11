@@ -1,11 +1,14 @@
 package dk.statsbiblioteket.infra.workflowstatemonitor;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.Set;
 
 /**
  * Bean representing a single state in a workflow
  */
+@XmlRootElement
 public class State {
     private int id;
     private String component;

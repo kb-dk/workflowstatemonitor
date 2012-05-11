@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.infra.workflowstatemonitor;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.Set;
 /**
  * Bean representing a named entity.
  */
+@XmlRootElement
 public class Entity {
     private int id;
     private String name;
@@ -31,6 +34,7 @@ public class Entity {
         this.name = name;
     }
 
+    @XmlTransient
     public Set<State> getStates() {
         return states;
     }

@@ -47,7 +47,7 @@ public class TestHibernatedStateManager extends TestCase {
         //Check element is inserted as expected
         assertEquals(1, hibernatedStateManager.listEntities().size());
         assertEquals(1, hibernatedStateManager.listStates().size());
-        assertEquals("test", hibernatedStateManager.listEntities().get(0));
+        assert(contains(hibernatedStateManager.listEntities(), "test"));
         assertEquals("stat", hibernatedStateManager.listStates().get(0).getState());
         assertEquals("comp", hibernatedStateManager.listStates().get(0).getComponent());
         assertEquals(new Date(1000), hibernatedStateManager.listStates().get(0).getDate());
@@ -56,12 +56,21 @@ public class TestHibernatedStateManager extends TestCase {
     @Test
     public void testListEntities() {
         // List entities
-        List<String> list = new HibernatedStateManager().listEntities();
+        List<Entity> list = new HibernatedStateManager().listEntities();
 
         // Check them
         assertEquals(2, list.size());
-        assertTrue(list.contains("file1"));
-        assertTrue(list.contains("file2"));
+        assertTrue(contains(list, "file1"));
+        assertTrue(contains(list, "file2"));
+    }
+
+    private boolean contains(List<Entity> entities, String name) {
+        for (Entity entity : entities) {
+            if (entity.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Test

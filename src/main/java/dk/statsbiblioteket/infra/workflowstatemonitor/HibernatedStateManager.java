@@ -2,12 +2,13 @@ package dk.statsbiblioteket.infra.workflowstatemonitor;
 
 import org.hibernate.Session;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,8 +19,9 @@ import java.util.List;
 public class HibernatedStateManager implements StateManager {
     @Override
     @POST
-    @Path("states/{entityName}")
-    public void addState(String entityName, State state) {
+    @Path("states/{entityName}/")
+    @Consumes("text/xml")
+    public void addState(@PathParam("entityName") String entityName, State state) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         try {
             session.beginTransaction();
@@ -45,29 +47,25 @@ public class HibernatedStateManager implements StateManager {
     @GET
     @Path("entities/")
     @Produces("text/xml")
-    public List<String> listEntities() {
+    public List<Entity> listEntities() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        List<String> entityNames;
+        List<Entity> entities;
         try {
             session.beginTransaction();
 
-            List<Entity> entities = session.createQuery("from Entity").list();
-            entityNames = new ArrayList<String>();
-            for (Entity entity : entities) {
-                entityNames.add(entity.getName());
-            }
+            entities = session.createQuery("from Entity").list();
             session.getTransaction().commit();
         } finally {
             if (session.isOpen()) {
                 session.close();
             }
         }
-        return entityNames;
+        return entities;
     }
 
     @Override
     @GET
-    @Path("states/")
+    @Path("states/all/")
     @Produces("text/xml")
     public List<State> listStates() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -87,17 +85,11 @@ public class HibernatedStateManager implements StateManager {
 
     @Override
     @GET
-    @Path("states/{entity}")
+    @Path("states/{entityName}/")
     @Produces("text/xml")
-    public List<State> listStates(String... entity) {
-        if (entity == null || entity.length == 0) {
+    public List<State> listStates(@PathParam("entityName") String entityName) {
+        if (entityName == null) {
             return Collections.emptyList();
-        }
-
-        StringBuilder entities = new StringBuilder();
-        entities.append('\'').append(entity[0]).append('\'');
-        for (int i = 1; i < entity.length; i++) {
-            entities.append(",").append('\'').append(entity[i]).append('\'');
         }
 
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -105,8 +97,8 @@ public class HibernatedStateManager implements StateManager {
         try {
             session.beginTransaction();
 
-            states = session.createQuery(
-                    "SELECT s FROM State s, IN (s.entities) AS e WHERE e.name IN (" + entities.toString() + ")").list();
+            states = session.createQuery("SELECT s FROM State s, IN (s.entities) AS e WHERE e.name='" + entityName + "'")
+                    .list();
             session.getTransaction().commit();
         } finally {
             if (session.isOpen()) {
@@ -118,7 +110,7 @@ public class HibernatedStateManager implements StateManager {
 
     @Override
     @GET
-    @Path("states/{entity}")
+    @Path("states/")
     @Produces("text/xml")
     public List<State> listStates(@QueryParam("onlyLast") boolean onlyLast,
                                   @QueryParam("includes") List<String> includes,
