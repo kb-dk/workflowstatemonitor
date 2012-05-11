@@ -21,13 +21,6 @@ public interface StateManager {
     public List<Entity> listEntities();
 
     /**
-     * List ALL registered states in system.
-     *
-     * @return A list of all registered states.
-     */
-    public List<State> listStates();
-
-    /**
      * List all registered states for the given entities.
      *
      * @param entityName What to list states for

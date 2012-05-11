@@ -11,9 +11,6 @@
         <property name="component"/>
         <property name="state"/>
         <property name="date" type="timestamp"/>
-        <set name="entities" table="ENTITY_STATE" inverse="true" lazy="false">
-            <key column="STATE_ID"/>
-            <many-to-many column="ENTITY_ID" class="Entity"/>
-        </set>
+        <many-to-one name="entity" column="ENTITY_STATE" class="Entity" lazy="false"/>
     </class>
 </hibernate-mapping>

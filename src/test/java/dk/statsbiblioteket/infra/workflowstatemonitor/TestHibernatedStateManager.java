@@ -1,24 +1,17 @@
 package dk.statsbiblioteket.infra.workflowstatemonitor;
 
 import junit.framework.TestCase;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.internal.SessionImpl;
-import org.hsqldb.jdbc.JDBCConnection;
-import org.hsqldb.persist.HsqlProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class TestHibernatedStateManager extends TestCase {
     @Before
@@ -45,12 +38,14 @@ public class TestHibernatedStateManager extends TestCase {
         hibernatedStateManager.addState("test", state);
 
         //Check element is inserted as expected
-        assertEquals(1, hibernatedStateManager.listEntities().size());
-        assertEquals(1, hibernatedStateManager.listStates().size());
-        assert(contains(hibernatedStateManager.listEntities(), "test"));
-        assertEquals("stat", hibernatedStateManager.listStates().get(0).getState());
-        assertEquals("comp", hibernatedStateManager.listStates().get(0).getComponent());
-        assertEquals(new Date(1000), hibernatedStateManager.listStates().get(0).getDate());
+        List<Entity> entities = hibernatedStateManager.listEntities();
+        List<State> states = hibernatedStateManager.listStates(false, null, null);
+        assertEquals(1, entities.size());
+        assert(contains(entities, "test"));
+        assertEquals(1, states.size());
+        assertEquals("stat", states.get(0).getState());
+        assertEquals("comp", states.get(0).getComponent());
+        assertEquals(new Date(1000), states.get(0).getDate());
     }
 
     @Test
@@ -78,7 +73,7 @@ public class TestHibernatedStateManager extends TestCase {
         HibernatedStateManager hibernatedStateManager = new HibernatedStateManager();
 
         // List all states
-        List<State> states = hibernatedStateManager.listStates();
+        List<State> states = hibernatedStateManager.listStates(false, null, null);
 
         // Check them
         assertEquals(7, states.size());
@@ -144,7 +139,6 @@ public class TestHibernatedStateManager extends TestCase {
         assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         states = hibernatedStateManager.listStates(true, null, null);
-        System.out.println(states);
 
         //Check them
         assertEquals(2, states.size());
@@ -160,7 +154,7 @@ public class TestHibernatedStateManager extends TestCase {
     private boolean contains(List<State> states, String component, Date date, String state1, String file) {
         for (State state : states) {
             if (state.getComponent().equals(component) && state.getDate().getTime() == date.getTime()
-                    && state.getState().equals(state1) && state.getEntities().iterator().next().getName()
+                    && state.getState().equals(state1) && state.getEntity().getName()
                     .equals(file)) {
                 return true;
             }

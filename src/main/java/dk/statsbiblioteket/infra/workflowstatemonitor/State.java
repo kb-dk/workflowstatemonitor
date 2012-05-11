@@ -1,7 +1,6 @@
 package dk.statsbiblioteket.infra.workflowstatemonitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,7 +13,7 @@ public class State {
     private String component;
     private String state;
     private Date date;
-    private Set<Entity> entities;
+    private Entity entity;
 
     public State() {
     }
@@ -51,18 +50,18 @@ public class State {
         this.date = date;
     }
 
-    public Set<Entity> getEntities() {
-        return entities;
+    public Entity getEntity() {
+        return entity;
     }
 
-    public void setEntities(Set<Entity> entities) {
-        this.entities = entities;
+    public void setEntity(Entity entity) {
+        this.entity = entity;
     }
 
     @Override
     public String toString() {
         return "State{" + "id=" + id + ", component='" + component + '\''
-                + ", state='" + state + '\'' + ", date=" + date + ", entities="
-                + entities + '}';
+                + ", state='" + state + '\'' + ", date=" + date + ", entity="
+                + entity + '}';
     }
 }

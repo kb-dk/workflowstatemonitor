@@ -9,9 +9,5 @@
             <generator class="native"/>
         </id>
         <property name="name"/>
-        <set name="states" table="ENTITY_STATE">
-            <key column="ENTITY_ID"/>
-            <many-to-many column="STATE_ID" class="State"/>
-        </set>
     </class>
 </hibernate-mapping>

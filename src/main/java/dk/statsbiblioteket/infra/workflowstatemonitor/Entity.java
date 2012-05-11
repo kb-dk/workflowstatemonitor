@@ -13,7 +13,6 @@ import java.util.Set;
 public class Entity {
     private int id;
     private String name;
-    private Set<State> states = new HashSet<State>();
 
     public Entity() {
     }
@@ -32,15 +31,6 @@ public class Entity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @XmlTransient
-    public Set<State> getStates() {
-        return states;
-    }
-
-    public void setStates(Set<State> states) {
-        this.states = states;
     }
 
     @Override

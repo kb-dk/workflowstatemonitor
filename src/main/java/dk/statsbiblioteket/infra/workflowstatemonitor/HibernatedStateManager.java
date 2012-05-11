@@ -31,9 +31,9 @@ public class HibernatedStateManager implements StateManager {
             if (entity == null) {
                 entity = new Entity();
                 entity.setName(entityName);
+                session.save(entity);
             }
-            entity.getStates().add(state);
-            session.saveOrUpdate(entity);
+            state.setEntity(entity);
             session.save(state);
             session.getTransaction().commit();
         } finally {
@@ -65,26 +65,6 @@ public class HibernatedStateManager implements StateManager {
 
     @Override
     @GET
-    @Path("states/all/")
-    @Produces("text/xml")
-    public List<State> listStates() {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        List<State> states;
-        try {
-            session.beginTransaction();
-
-            states = session.createQuery("from State").list();
-            session.getTransaction().commit();
-        } finally {
-            if (session.isOpen()) {
-                session.close();
-            }
-        }
-        return states;
-    }
-
-    @Override
-    @GET
     @Path("states/{entityName}/")
     @Produces("text/xml")
     public List<State> listStates(@PathParam("entityName") String entityName) {
@@ -97,7 +77,7 @@ public class HibernatedStateManager implements StateManager {
         try {
             session.beginTransaction();
 
-            states = session.createQuery("SELECT s FROM State s, IN (s.entities) AS e WHERE e.name='" + entityName + "'")
+            states = session.createQuery("FROM State s WHERE s.entity.name='" + entityName + "'")
                     .list();
             session.getTransaction().commit();
         } finally {
@@ -118,12 +98,14 @@ public class HibernatedStateManager implements StateManager {
         StringBuilder query = new StringBuilder();
 
         if (onlyLast) {
-            query.append("s.date = (SELECT MAX(s2.date) FROM State s2, IN (s2.entities) AS e2 WHERE e.name = e2.name)");
+            query.append("WHERE s.date = (SELECT MAX(s2.date) FROM State s2 WHERE s.entity.name = s2.entity.name)");
         }
 
         if (includes != null && includes.size() != 0) {
             if (query.length() > 0) {
                 query.append(" AND ");
+            } else {
+                query.append("WHERE ");
             }
             query.append("s.state IN (\'").append(includes.get(0)).append('\'');
             for (int i = 1; i < includes.size(); i++) {
@@ -135,6 +117,8 @@ public class HibernatedStateManager implements StateManager {
         if (excludes != null && excludes.size() != 0) {
             if (query.length() > 0) {
                 query.append(" AND ");
+            } else {
+                query.append("WHERE ");
             }
             query.append("NOT s.state IN (\'").append(excludes.get(0)).append('\'');
             for (int i = 1; i < excludes.size(); i++) {
@@ -148,7 +132,7 @@ public class HibernatedStateManager implements StateManager {
         try {
             session.beginTransaction();
 
-            states = session.createQuery("SELECT s FROM State s, IN (s.entities) AS e WHERE " + query.toString())
+            states = session.createQuery("SELECT s FROM State s " + query.toString())
                     .list();
             session.getTransaction().commit();
         } finally {
