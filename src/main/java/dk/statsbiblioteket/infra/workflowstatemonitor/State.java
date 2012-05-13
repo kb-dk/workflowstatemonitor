@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * Bean representing a single state in a workflow
+ * Bean representing a single state in a workflow.
  */
 @XmlRootElement
 public class State {
