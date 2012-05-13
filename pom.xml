@@ -61,7 +61,7 @@
 
     <licenses>
         <license>
-            <name>Apache 2</name>
+            <name>Apache2</name>
             <distribution>repo</distribution>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
@@ -86,20 +86,22 @@
     </distributionManagement>
 
     <build>
-      <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>license-maven-plugin</artifactId>
-          <configuration>
-            <generateBundle>true</generateBundle>
-            <failIfWarning>true</failIfWarning>
-            <useMissingFile>true</useMissingFile>
-            <extraExtensions>
-              <xsd>xml</xsd>
-            </extraExtensions>
-          </configuration>
-        </plugin>
-      </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <generateBundle>true</generateBundle>
+                    <failIfWarning>true</failIfWarning>
+                    <useMissingFile>true</useMissingFile>
+                    <extraExtensions>
+                        <xsd>xml</xsd>
+                    </extraExtensions>
+                    <licenseName>apache_v2</licenseName>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
