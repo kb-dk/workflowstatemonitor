@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.infra.workflowstatemonitor;
+package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
 import junit.framework.TestCase;
 import org.junit.After;

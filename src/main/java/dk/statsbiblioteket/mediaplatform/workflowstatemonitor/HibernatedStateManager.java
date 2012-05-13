@@ -1,12 +1,10 @@
-package dk.statsbiblioteket.infra.workflowstatemonitor;
+package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

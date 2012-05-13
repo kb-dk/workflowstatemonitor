@@ -1,10 +1,6 @@
-package dk.statsbiblioteket.infra.workflowstatemonitor;
+package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Bean representing a named entity.

@@ -1,8 +1,7 @@
-package dk.statsbiblioteket.infra.workflowstatemonitor;
+package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Bean representing a single state in a workflow.

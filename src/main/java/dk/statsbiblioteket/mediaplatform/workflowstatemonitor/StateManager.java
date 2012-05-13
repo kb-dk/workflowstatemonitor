@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.infra.workflowstatemonitor;
+package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
 import java.util.List;
 
