@@ -31,8 +31,8 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping resource="dk/statsbiblioteket/infra/workflowstatemonitor/State.hbm.xml"/>
-        <mapping resource="dk/statsbiblioteket/infra/workflowstatemonitor/Entity.hbm.xml"/>
+        <mapping resource="dk/statsbiblioteket/mediaplatform/workflowstatemonitor/State.hbm.xml"/>
+        <mapping resource="dk/statsbiblioteket/mediaplatform/workflowstatemonitor/Entity.hbm.xml"/>
 
     </session-factory>
 

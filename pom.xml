@@ -4,11 +4,103 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dk.statsbiblioteket.infra</groupId>
+    <groupId>dk.statsbiblioteket.mediaplatform</groupId>
     <artifactId>workflowstatemonitor</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>Workflow state monitor</name>
     <packaging>war</packaging>
+
+    <parent>
+        <groupId>dk.statsbiblioteket.sbprojects</groupId>
+        <artifactId>sbprojects-parent</artifactId>
+        <version>3</version>
+    </parent>
+
+    <description>Used for statsbiblioteket.dk's Media platform. Records states of workflow.
+    </description>
+    <url>https://sbforge.org/display/INFRA</url>
+
+    <organization>
+        <name>The State and University Library, Denmark</name>
+        <url>http://statsbiblioteket.dk</url>
+    </organization>
+
+
+    <repositories>
+        <repository>
+            <id>sbprojects-nexus</id>
+            <url>https://sbprojects.statsbiblioteket.dk/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <scm>
+        <url>https://github.com/kaarefc/workflowstatemanager</url>
+        <connection>scm:git:git://github.com/kaarefc/workflowstatemanager.git</connection>
+        <developerConnection>scm:git:git@github.com:kaarefc/workflowstatemanager.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Kåre Fiedler Christiansen</name>
+            <email>kfc@statsbiblioteket.dk</email>
+            <organization>The State and University Library, Denmark</organization>
+            <organizationUrl>http://www.statsbiblioteket.dk</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <inceptionYear>2012</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://sbforge.org/jira/browse/INFRA</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>https://sbforge.org/jenkins/</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>sbprojects-nexus</id>
+            <name>SBProjects Maven site</name>
+            <url>dav:https://sbprojects.statsbiblioteket.dk/maven/infra/sites/reference/${project.version}</url>
+        </site>
+    </distributionManagement>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <configuration>
+            <generateBundle>true</generateBundle>
+            <failIfWarning>true</failIfWarning>
+            <useMissingFile>true</useMissingFile>
+            <extraExtensions>
+              <xsd>xml</xsd>
+            </extraExtensions>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
 
     <dependencies>
         <dependency>
