@@ -17,26 +17,22 @@
   limitations under the License.
   #L%
   -->
-<configuration>
-    <!-- TODO Move configuration out of WAR file -->
-    <appender name="FILE" class="ch.qos.logback.core.RollingFileAppender">
-        <file>logs/workflowstatemonitor.log</file>
+<configuration scan="true" scanPeriod="30 seconds">
+    <insertFromJNDI env-entry-name="java:comp/env/dk/statsbiblioteket/mediaplatform/workflowstatemonitor/logback" as="logbackConfiguration"/>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>logs/workflowstatemonitor.%i.log.gz</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>3</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize>
-        </triggeringPolicy>
-
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <root level="info">
-        <appender-ref ref="FILE"/>
-    </root>
+    <if condition='new java.io.File("${logbackConfiguration}").exists()&amp;&amp;new java.io.File("${logbackConfiguration}").isFile()'>
+        <then>
+            <include file="${logbackConfiguration}"/>
+        </then>
+        <else>
+            <if condition='"${logbackConfiguration}".contains(":")'>
+                <then>
+                    <include url="${logbackConfiguration}"/>
+                </then>
+                <else>
+                    <include resource="${logbackConfiguration}"/>
+                </else>
+            </if>
+        </else>
+    </if>
 </configuration>

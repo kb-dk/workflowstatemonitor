@@ -51,8 +51,9 @@ public class TestHibernatedStateManager extends TestCase {
         //Insert an element
         State state = new State();
         state.setComponent("comp");
+        state.setMessage("message");
         state.setDate(new Date(1000));
-        state.setState("stat");
+        state.setStateName("stat");
         HibernatedStateManager hibernatedStateManager = new HibernatedStateManager();
         hibernatedStateManager.addState("test", state);
 
@@ -62,7 +63,8 @@ public class TestHibernatedStateManager extends TestCase {
         assertEquals(1, entities.size());
         assert(contains(entities, "test"));
         assertEquals(1, states.size());
-        assertEquals("stat", states.get(0).getState());
+        assertEquals("stat", states.get(0).getStateName());
+        assertEquals("message", states.get(0).getMessage());
         assertEquals("comp", states.get(0).getComponent());
         assertEquals(new Date(1000), states.get(0).getDate());
     }
@@ -173,7 +175,7 @@ public class TestHibernatedStateManager extends TestCase {
     private boolean contains(List<State> states, String component, Date date, String state1, String file) {
         for (State state : states) {
             if (state.getComponent().equals(component) && state.getDate().getTime() == date.getTime()
-                    && state.getState().equals(state1) && state.getEntity().getName()
+                    && state.getStateName().equals(state1) && state.getEntity().getName()
                     .equals(file)) {
                 return true;
             }
@@ -186,37 +188,37 @@ public class TestHibernatedStateManager extends TestCase {
         State state1 = new State();
         state1.setComponent("comp1");
         state1.setDate(new Date(0));
-        state1.setState("state1");
+        state1.setStateName("state1");
         hibernatedStateManager.addState("file1", state1);
         State state2 = new State();
         state2.setComponent("comp1");
         state2.setDate(new Date(1000));
-        state2.setState("state2");
+        state2.setStateName("state2");
         hibernatedStateManager.addState("file1", state2);
         State state3 = new State();
         state3.setComponent("comp2");
         state3.setDate(new Date(2000));
-        state3.setState("state1");
+        state3.setStateName("state1");
         hibernatedStateManager.addState("file1", state3);
         State state4 = new State();
         state4.setComponent("comp2");
         state4.setDate(new Date(3000));
-        state4.setState("state2");
+        state4.setStateName("state2");
         hibernatedStateManager.addState("file1", state4);
         State state5 = new State();
         state5.setComponent("comp1");
         state5.setDate(new Date(4000));
-        state5.setState("state1");
+        state5.setStateName("state1");
         hibernatedStateManager.addState("file2", state5);
         State state6 = new State();
         state6.setComponent("comp1");
         state6.setDate(new Date(5000));
-        state6.setState("state2");
+        state6.setStateName("state2");
         hibernatedStateManager.addState("file2", state6);
         State state7 = new State();
         state7.setComponent("comp2");
         state7.setDate(new Date(6000));
-        state7.setState("state1");
+        state7.setStateName("state1");
         hibernatedStateManager.addState("file2", state7);
     }
 

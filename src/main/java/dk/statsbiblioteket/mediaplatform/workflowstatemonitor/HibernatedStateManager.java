@@ -31,6 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,6 +61,9 @@ public class HibernatedStateManager implements StateManager {
                     session.save(entity);
                 }
                 state.setEntity(entity);
+                if (state.getDate() == null) {
+                    state.setDate(new Date());
+                }
                 session.save(state);
                 session.getTransaction().commit();
                 log.debug("Added state '{}'", state);
@@ -153,7 +157,7 @@ public class HibernatedStateManager implements StateManager {
 
             if (includes != null && includes.size() != 0) {
                 initNextClause(query);
-                query.append("s.state IN (\'").append(includes.get(0)).append('\'');
+                query.append("s.stateName IN (\'").append(includes.get(0)).append('\'');
                 for (int i = 1; i < includes.size(); i++) {
                     query.append(",").append('\'').append(includes.get(1)).append('\'');
                 }
@@ -162,7 +166,7 @@ public class HibernatedStateManager implements StateManager {
 
             if (excludes != null && excludes.size() != 0) {
                 initNextClause(query);
-                query.append("NOT s.state IN (\'").append(excludes.get(0)).append('\'');
+                query.append("NOT s.stateName IN (\'").append(excludes.get(0)).append('\'');
                 for (int i = 1; i < excludes.size(); i++) {
                     query.append(",").append('\'').append(excludes.get(1)).append('\'');
                 }

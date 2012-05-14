@@ -1,0 +1,6 @@
+<Context>
+    <Environment name="dk/statsbiblioteket/mediaplatform/workflowstatemonitor/logback"
+                 value="${user.home}/conf/logback.xml" type="java.lang.String" override="false"/>
+    <Environment name="dk/statsbiblioteket/mediaplatform/workflowstatemonitor/hibernate"
+                 value="${user.home}/conf/hibernate.cfg.xml" type="java.lang.String" override="false"/>
+</Context>

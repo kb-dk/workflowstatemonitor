@@ -25,25 +25,18 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.File;
+
 /**
  * Utility class for using hibernate.
  */
 public final class HibernateUtil {
     private static final Logger log = LoggerFactory.getLogger(HibernateUtil.class);
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();
-    private static SessionFactory buildSessionFactory() {
-        try {
-            // Create the SessionFactory from hibernate.cfg.xml
-            Configuration configuration = new Configuration().configure();
-            log.info("Connection to hibernate with configuration '{}'", configuration.getProperties());
-            return configuration.buildSessionFactory(
-                    new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry());
-        } catch (Exception e) {
-            log.error("Initial SessionFactory creation failed.", e);
-            throw new ExceptionInInitializerError(e);
-        }
-    }
+    private static SessionFactory sessionFactory;
 
     /** Utility class, must not be initialised. */
     private HibernateUtil(){}
@@ -52,7 +45,30 @@ public final class HibernateUtil {
      * Get the session factory for hibernate sessions.
      * @return The session factory.
      */
-    public static SessionFactory getSessionFactory() {
+    public static synchronized SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            // Create the SessionFactory from hibernate.cfg.xml
+            String hibernateConfiguration = null;
+            try {
+                Context initCtx = new InitialContext();
+                Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+                hibernateConfiguration = (String)
+                        envCtx.lookup("dk/statsbiblioteket/mediaplatform/workflowstatemonitor/hibernate");
+                log.info("Using hibernate configuration file '{}'", hibernateConfiguration);
+            } catch (NamingException e) {
+                log.error("Unable to lookup logback configuration from JNDI", e);
+            }
+            Configuration configuration;
+            if (hibernateConfiguration == null) {
+                configuration = new Configuration().configure();
+            } else {
+                configuration = new Configuration().configure(new File(hibernateConfiguration));
+            }
+            log.info("Connection to hibernate with configuration '{}'", configuration.getProperties());
+            sessionFactory = configuration.buildSessionFactory(
+                    new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry());
+        }
         return sessionFactory;
     }
 

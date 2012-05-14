@@ -29,7 +29,8 @@ import java.util.Date;
 public class State {
     private int id;
     private String component;
-    private String state;
+    private String stateName;
+    private String message;
     private Date date;
     private Entity entity;
 
@@ -52,12 +53,20 @@ public class State {
         this.component = component;
     }
 
-    public String getState() {
-        return state;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Date getDate() {
@@ -79,7 +88,7 @@ public class State {
     @Override
     public String toString() {
         return "State{" + "id=" + id + ", component='" + component + '\''
-                + ", state='" + state + '\'' + ", date=" + date + ", entity="
+                + ", state='" + stateName + '\'' + ", date=" + date + ", entity="
                 + entity + '}';
     }
 }
