@@ -42,7 +42,7 @@
     <scm>
         <url>https://github.com/statsbiblioteket/workflowstatemanager</url>
         <connection>scm:git://github.com/statsbiblioteket/workflowstatemanager.git</connection>
-        <developerConnection>scm:git:git@github.com:statsbiblioteket/workflowstatemanager.git</developerConnection>
+        <developerConnection>scm:git@github.com:statsbiblioteket/workflowstatemanager.git</developerConnection>
     </scm>
 
     <developers>
