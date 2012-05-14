@@ -40,9 +40,9 @@
     </repositories>
 
     <scm>
-        <url>https://github.com/statsbiblioteket/workflowstatemanager</url>
-        <connection>scm:git:git@github.com/statsbiblioteket/workflowstatemanager.git</connection>
-        <developerConnection>scm:git:git@github.com:statsbiblioteket/workflowstatemanager.git</developerConnection>
+        <url>https://github.com/statsbiblioteket/workflowstatemonitor</url>
+        <connection>scm:git:git@github.com/statsbiblioteket/workflowstatemonitor.git</connection>
+        <developerConnection>scm:git:git@github.com:statsbiblioteket/workflowstatemonitor.git</developerConnection>
     </scm>
 
     <developers>
