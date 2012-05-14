@@ -25,6 +25,18 @@
     <display-name>workflowstatemonitor</display-name>
     <description>Workflow State Monitor</description>
 
+    <env-entry>
+        <env-entry-name>workflowstatemonitor/logback</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>logback-default.xml</env-entry-value>
+    </env-entry>
+
+    <env-entry>
+        <env-entry-name>workflowstatemonitor/hibernate</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>hibernate.cfg-default.xml</env-entry-value>
+    </env-entry>
+
     <servlet>
         <servlet-name>workflowstatemonitor</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
