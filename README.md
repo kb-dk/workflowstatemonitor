@@ -1,4 +1,0 @@
-workflowstatemonitor
-====================
-
-Workflow State Monitor
