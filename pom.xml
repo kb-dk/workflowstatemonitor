@@ -41,8 +41,8 @@
 
     <scm>
         <url>https://github.com/statsbiblioteket/workflowstatemanager</url>
-        <connection>scm:git://github.com/statsbiblioteket/workflowstatemanager.git</connection>
-        <developerConnection>scm:git@github.com:statsbiblioteket/workflowstatemanager.git</developerConnection>
+        <connection>scm:git:git@github.com/statsbiblioteket/workflowstatemanager.git</connection>
+        <developerConnection>scm:git:git@github.com:statsbiblioteket/workflowstatemanager.git</developerConnection>
     </scm>
 
     <developers>
@@ -110,6 +110,11 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
             </plugin>
         </plugins>
         <finalName>${project.artifactId}</finalName>
