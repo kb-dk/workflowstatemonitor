@@ -20,6 +20,8 @@
 package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
+import com.sun.jersey.api.core.PackagesResourceConfig;
+import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -30,7 +32,8 @@ import java.io.IOException;
 public class Server {
 
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServerFactory.create("http://localhost:9998/");
+        ResourceConfig rc = new PackagesResourceConfig("dk.statsbiblioteket.mediaplatform.workflowstatemonitor");
+        HttpServer server = HttpServerFactory.create("http://localhost:9998/workflowstatemonitor/", rc);
         server.start();
     }
 }
