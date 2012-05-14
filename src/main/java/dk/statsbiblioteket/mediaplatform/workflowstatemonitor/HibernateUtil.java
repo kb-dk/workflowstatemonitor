@@ -54,7 +54,7 @@ public final class HibernateUtil {
                 Context envCtx = (Context) initCtx.lookup("java:comp/env");
 
                 hibernateConfiguration = (String)
-                        envCtx.lookup("dk/statsbiblioteket/mediaplatform/workflowstatemonitor/hibernate");
+                        envCtx.lookup("workflowstatemonitor/hibernate");
                 log.info("Using hibernate configuration file '{}'", hibernateConfiguration);
             } catch (NamingException e) {
                 log.error("Unable to lookup logback configuration from JNDI", e);
