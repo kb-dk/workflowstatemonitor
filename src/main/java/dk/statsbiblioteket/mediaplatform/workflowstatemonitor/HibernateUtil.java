@@ -57,7 +57,7 @@ public final class HibernateUtil {
                         envCtx.lookup("workflowstatemonitor/hibernate");
                 log.info("Using hibernate configuration file '{}'", hibernateConfiguration);
             } catch (NamingException e) {
-                log.error("Unable to lookup logback configuration from JNDI", e);
+                log.warn("Unable to lookup hibernate configuration from JNDI. Falling back to in-memory database", e);
             }
             Configuration configuration;
             if (hibernateConfiguration == null) {
