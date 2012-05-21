@@ -110,26 +110,13 @@ public class HibernatedStateManager implements StateManager {
     @GET
     @Path("states/{entityName}/")
     @Produces("text/xml")
-    public List<State> listStates(@PathParam("entityName") String entityName) {
+    public List<State> listStates(@PathParam("entityName") String entityName,
+                                  @QueryParam("onlyLast") boolean onlyLast,
+                                  @QueryParam("includes") List<String> includes,
+                                  @QueryParam("excludes") List<String> excludes) {
         try {
             log.trace("Enter listStates(entityName='{}')", entityName);
-            if (entityName == null) {
-                return Collections.emptyList();
-            }
-
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-            List<State> states;
-            try {
-                session.beginTransaction();
-
-                states = session.createQuery("FROM State s WHERE s.entity.name='" + entityName + "'")
-                        .list();
-                session.getTransaction().commit();
-            } finally {
-                if (session.isOpen()) {
-                    session.close();
-                }
-            }
+            List<State> states = queryStates(entityName, onlyLast, includes, excludes);
             log.trace("Exit listStates(entityName='{}')->states='{}'", entityName, states);
             return states;
         } catch (RuntimeException e) {
@@ -148,44 +135,7 @@ public class HibernatedStateManager implements StateManager {
         try {
             log.trace("Enter listStates(onlyLast='{}', includes='{}', excludes='{}')",
                       new Object[]{onlyLast, includes, excludes});
-            StringBuilder query = new StringBuilder();
-
-            if (onlyLast) {
-                initNextClause(query);
-                query.append("s.date = (SELECT MAX(s2.date) FROM State s2 WHERE s.entity.id = s2.entity.id)");
-            }
-
-            if (includes != null && includes.size() != 0) {
-                initNextClause(query);
-                query.append("s.stateName IN (\'").append(includes.get(0)).append('\'');
-                for (int i = 1; i < includes.size(); i++) {
-                    query.append(",").append('\'').append(includes.get(1)).append('\'');
-                }
-                query.append(')');
-            }
-
-            if (excludes != null && excludes.size() != 0) {
-                initNextClause(query);
-                query.append("NOT s.stateName IN (\'").append(excludes.get(0)).append('\'');
-                for (int i = 1; i < excludes.size(); i++) {
-                    query.append(",").append('\'').append(excludes.get(1)).append('\'');
-                }
-                query.append(')');
-            }
-
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-            List<State> states;
-            try {
-                session.beginTransaction();
-
-                states = session.createQuery("SELECT s FROM State s " + query.toString())
-                        .list();
-                session.getTransaction().commit();
-            } finally {
-                if (session.isOpen()) {
-                    session.close();
-                }
-            }
+            List<State> states = queryStates(null, onlyLast, includes, excludes);
             log.trace("Exit listStates(onlyLast='{}', includes='{}', excludes='{}') -> states='{}'",
                       new Object[]{onlyLast, includes, excludes, states});
             return states;
@@ -194,6 +144,58 @@ public class HibernatedStateManager implements StateManager {
                       new Object[]{onlyLast, includes, excludes, e});
             throw e;
         }
+    }
+
+    private List<State> queryStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes) {
+
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        List<State> states;
+        try {
+            session.beginTransaction();
+            states = session.createQuery(
+                    "SELECT s FROM State s " + buildQuery(entityName, onlyLast, includes, excludes)).list();
+            session.getTransaction().commit();
+        } finally {
+            if (session.isOpen()) {
+                session.close();
+            }
+        }
+        return states;
+    }
+
+    private String buildQuery(String entityName, boolean onlyLast, List<String> includes,
+                                     List<String> excludes) {
+        StringBuilder query = new StringBuilder();
+        //TODO: Escape SQL
+        if (entityName != null) {
+            initNextClause(query);
+            query.append("s.entity.name='").append(entityName).append('\'');
+        }
+
+        if (onlyLast) {
+            initNextClause(query);
+            query.append("s.date = (SELECT MAX(s2.date) FROM State s2 WHERE s.entity.id = s2.entity.id)");
+        }
+
+        if (includes != null && includes.size() != 0) {
+            initNextClause(query);
+            query.append("s.stateName IN (\'").append(includes.get(0)).append('\'');
+            for (int i = 1; i < includes.size(); i++) {
+                query.append(",").append('\'').append(includes.get(1)).append('\'');
+            }
+            query.append(')');
+        }
+
+        if (excludes != null && excludes.size() != 0) {
+            initNextClause(query);
+            query.append("NOT s.stateName IN (\'").append(excludes.get(0)).append('\'');
+            for (int i = 1; i < excludes.size(); i++) {
+                query.append(",").append('\'').append(excludes.get(1)).append('\'');
+            }
+            query.append(')');
+        }
+        log.debug("Query '{}'", query);
+        return query.toString();
     }
 
     private void initNextClause(StringBuilder query) {

@@ -107,7 +107,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertTrue(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         // List states for file1
-        states = hibernatedStateManager.listStates("file1");
+        states = hibernatedStateManager.listStates("file1", false, null, null);
 
         // Check them
         assertEquals(4, states.size());
@@ -159,6 +159,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertTrue(contains(states, "comp1", new Date(5000), "state2", "file2"));
         assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
+        // List last states of all entities
         states = hibernatedStateManager.listStates(true, null, null);
 
         //Check them
@@ -170,6 +171,19 @@ public class TestHibernatedStateManager extends TestCase {
         assertFalse(contains(states, "comp1", new Date(4000), "state1", "file2"));
         assertFalse(contains(states, "comp1", new Date(5000), "state2", "file2"));
         assertTrue(contains(states, "comp2", new Date(6000), "state1", "file2"));
+
+        // List last state of file1
+        states = hibernatedStateManager.listStates("file1", true, null, null);
+
+        //Check them
+        assertEquals(1, states.size());
+        assertFalse(contains(states, "comp1", new Date(0), "state1", "file1"));
+        assertFalse(contains(states, "comp1", new Date(1000), "state2", "file1"));
+        assertFalse(contains(states, "comp2", new Date(2000), "state1", "file1"));
+        assertTrue(contains(states, "comp2", new Date(3000), "state2", "file1"));
+        assertFalse(contains(states, "comp1", new Date(4000), "state1", "file2"));
+        assertFalse(contains(states, "comp1", new Date(5000), "state2", "file2"));
+        assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
     }
 
     private boolean contains(List<State> states, String component, Date date, String state1, String file) {

@@ -42,9 +42,12 @@ public interface StateManager {
      * List all registered states for the given entity.
      *
      * @param entityName What to list states for.
+     * @param onlyLast If true, only list the newest registered state for the entity.
+     * @param includes If not null, only list states with one of the given names.
+     * @param excludes If not null, only list states without one of the given names.
      * @return A list of all registered states.
      */
-    public List<State> listStates(String entityName);
+    public List<State> listStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes);
 
     /**
      * List subset of registered states given by parameters.
