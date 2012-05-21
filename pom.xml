@@ -75,13 +75,13 @@
         <url>https://sbforge.org/jenkins/</url>
     </ciManagement>
 
-    <distributionManagement>
+    <!--distributionManagement>
         <site>
             <id>sbprojects-nexus</id>
             <name>SBProjects Maven site</name>
             <url>dav:https://sbprojects.statsbiblioteket.dk/maven/infra/sites/reference/${project.version}</url>
         </site>
-    </distributionManagement>
+    </distributionManagement-->
 
     <build>
         <plugins>
