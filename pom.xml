@@ -4,7 +4,7 @@
 
     <groupId>dk.statsbiblioteket.mediaplatform</groupId>
     <artifactId>workflowstatemonitor</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <name>Workflow state monitor</name>
     <packaging>war</packaging>
 
