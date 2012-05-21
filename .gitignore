@@ -1,4 +1,10 @@
 target/
+model/target
+statemonitor/target
+webapp/target
 .idea/
 workflowstatemonitor.i*
 atlassian-ide-plugin.xml
+model/model.i*
+statemonitor/statemonitor.i*
+webapp/webapp.i*
