@@ -11,6 +11,11 @@
     <packaging>war</packaging>
     <artifactId>webapp</artifactId>
 
+    <build>
+        <finalName>${parent.artifactId}</finalName>
+    </build>
+
+
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.mediaplatform</groupId>
@@ -69,6 +74,4 @@
             <artifactId>jersey-json</artifactId>
         </dependency>
     </dependencies>
-          <!--        <finalName>${project.artifactId}</finalName>
--->
 </project>
