@@ -30,7 +30,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -82,7 +81,7 @@ public class HibernatedStateManager implements StateManager {
     @Override
     @GET
     @Path("entities/")
-    @Produces("text/xml")
+    @Produces({"text/xml", "application/json"})
     public List<Entity> listEntities() {
         try {
             log.trace("Enter listEntities()");
@@ -109,7 +108,7 @@ public class HibernatedStateManager implements StateManager {
     @Override
     @GET
     @Path("states/{entityName}/")
-    @Produces("text/xml")
+    @Produces({"text/xml", "application/json"})
     public List<State> listStates(@PathParam("entityName") String entityName,
                                   @QueryParam("onlyLast") boolean onlyLast,
                                   @QueryParam("includes") List<String> includes,
@@ -128,7 +127,7 @@ public class HibernatedStateManager implements StateManager {
     @Override
     @GET
     @Path("states/")
-    @Produces("text/xml")
+    @Produces({"text/xml", "application/json"})
     public List<State> listStates(@QueryParam("onlyLast") boolean onlyLast,
                                   @QueryParam("includes") List<String> includes,
                                   @QueryParam("excludes") List<String> excludes) {
