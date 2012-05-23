@@ -73,7 +73,7 @@ public class HibernatedStateManager implements StateManager {
             }
             log.trace("Exit addState(entityName='{}',state='{}')", entityName, state);
         } catch (RuntimeException e) {
-            log.error("Failed addState(entityName='{}',state='{}'): '{}'", new Object[]{entityName, state, e});
+            log.error("Failed addState(entityName='{}',state='{}')", new Object[]{entityName, state, e});
             throw e;
         }
     }
@@ -119,7 +119,7 @@ public class HibernatedStateManager implements StateManager {
             log.trace("Exit listStates(entityName='{}')->states='{}'", entityName, states);
             return states;
         } catch (RuntimeException e) {
-            log.error("Failed listStates(entityName='{}'): '{}'", entityName, e);
+            log.error("Failed listStates(entityName='{}')", entityName, e);
             throw e;
         }
     }
@@ -139,7 +139,7 @@ public class HibernatedStateManager implements StateManager {
                       new Object[]{onlyLast, includes, excludes, states});
             return states;
         } catch (RuntimeException e) {
-            log.error("Failed listStates(onlyLast='{}', includes='{}', excludes='{}'): '{}'",
+            log.error("Failed listStates(onlyLast='{}', includes='{}', excludes='{}')",
                       new Object[]{onlyLast, includes, excludes, e});
             throw e;
         }
