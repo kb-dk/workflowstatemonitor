@@ -71,5 +71,11 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 </project>
