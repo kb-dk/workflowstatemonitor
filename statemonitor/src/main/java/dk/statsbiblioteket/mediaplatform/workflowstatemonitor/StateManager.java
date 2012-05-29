@@ -19,6 +19,7 @@
  */
 package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
+import java.util.Date;
 import java.util.List;
 
 /** Handling a set of timestamped, named states of named components for named entities. */
@@ -45,9 +46,12 @@ public interface StateManager {
      * @param onlyLast If true, only list the newest registered state for the entity.
      * @param includes If not null, only list states with one of the given names.
      * @param excludes If not null, only list states without one of the given names.
+     * @param startDate If not null, only list states with timestamp after this date.
+     * @param endDate If not null, only list states with timestamp before this date.
      * @return A list of all registered states.
      */
-    public List<State> listStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes);
+    public List<State> listStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes,
+                                  Date startDate, Date endDate);
 
     /**
      * List subset of registered states given by parameters.
@@ -55,7 +59,10 @@ public interface StateManager {
      * @param onlyLast If true, only list the newest registered state for each entity.
      * @param includes If not null, only list states with one of the given names.
      * @param excludes If not null, only list states without one of the given names.
+     * @param startDate If not null, only list states with timestamp after this date.
+     * @param endDate If not null, only list states with timestamp before this date.
      * @return A list of all registered states.
      */
-    public List<State> listStates(boolean onlyLast, List<String> includes, List<String> excludes);
+    public List<State> listStates(boolean onlyLast, List<String> includes, List<String> excludes, Date startDate,
+                                  Date endDate);
 }

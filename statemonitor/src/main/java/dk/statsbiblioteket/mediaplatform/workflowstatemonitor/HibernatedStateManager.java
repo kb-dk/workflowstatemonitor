@@ -19,6 +19,7 @@
  */
 package dk.statsbiblioteket.mediaplatform.workflowstatemonitor;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A state manager backed by a hibernated database.
@@ -112,10 +116,12 @@ public class HibernatedStateManager implements StateManager {
     public List<State> listStates(@PathParam("entityName") String entityName,
                                   @QueryParam("onlyLast") boolean onlyLast,
                                   @QueryParam("includes") List<String> includes,
-                                  @QueryParam("excludes") List<String> excludes) {
+                                  @QueryParam("excludes") List<String> excludes,
+                                  @QueryParam("startDate") Date startDate,
+                                  @QueryParam("endDate") Date endDate) {
         try {
             log.trace("Enter listStates(entityName='{}')", entityName);
-            List<State> states = queryStates(entityName, onlyLast, includes, excludes);
+            List<State> states = queryStates(entityName, onlyLast, includes, excludes, startDate, endDate);
             log.trace("Exit listStates(entityName='{}')->states='{}'", entityName, states);
             return states;
         } catch (RuntimeException e) {
@@ -130,11 +136,13 @@ public class HibernatedStateManager implements StateManager {
     @Produces({"text/xml", "application/json"})
     public List<State> listStates(@QueryParam("onlyLast") boolean onlyLast,
                                   @QueryParam("includes") List<String> includes,
-                                  @QueryParam("excludes") List<String> excludes) {
+                                  @QueryParam("excludes") List<String> excludes,
+                                  @QueryParam("startDate") Date startDate,
+                                  @QueryParam("endDate") Date endDate) {
         try {
             log.trace("Enter listStates(onlyLast='{}', includes='{}', excludes='{}')",
                       new Object[]{onlyLast, includes, excludes});
-            List<State> states = queryStates(null, onlyLast, includes, excludes);
+            List<State> states = queryStates(null, onlyLast, includes, excludes, startDate, endDate);
             log.trace("Exit listStates(onlyLast='{}', includes='{}', excludes='{}') -> states='{}'",
                       new Object[]{onlyLast, includes, excludes, states});
             return states;
@@ -145,14 +153,14 @@ public class HibernatedStateManager implements StateManager {
         }
     }
 
-    private List<State> queryStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes) {
+    private List<State> queryStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes,
+                                    Date startDate, Date endDate) {
 
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         List<State> states;
         try {
             session.beginTransaction();
-            states = session.createQuery(
-                    "SELECT s FROM State s " + buildQuery(entityName, onlyLast, includes, excludes)).list();
+            states = buildQuery(session, entityName, onlyLast, includes, excludes, startDate, endDate).list();
             session.getTransaction().commit();
         } finally {
             if (session.isOpen()) {
@@ -162,13 +170,15 @@ public class HibernatedStateManager implements StateManager {
         return states;
     }
 
-    private String buildQuery(String entityName, boolean onlyLast, List<String> includes,
-                                     List<String> excludes) {
+    private Query buildQuery(Session session, String entityName, boolean onlyLast, List<String> includes,
+                              List<String> excludes, Date startDate, Date endDate) {
         StringBuilder query = new StringBuilder();
+        Map<String, Object> parameters = new HashMap<String, Object>();
         //TODO: Escape SQL
         if (entityName != null) {
             initNextClause(query);
-            query.append("s.entity.name='").append(entityName).append('\'');
+            query.append("s.entity.name = :entityName");
+            parameters.put("entityName", entityName);
         }
 
         if (onlyLast) {
@@ -178,23 +188,38 @@ public class HibernatedStateManager implements StateManager {
 
         if (includes != null && includes.size() != 0) {
             initNextClause(query);
-            query.append("s.stateName IN (\'").append(includes.get(0)).append('\'');
-            for (int i = 1; i < includes.size(); i++) {
-                query.append(",").append('\'').append(includes.get(1)).append('\'');
-            }
-            query.append(')');
+            query.append("s.stateName IN (:includes)");
+            parameters.put("includes", includes);
         }
 
         if (excludes != null && excludes.size() != 0) {
             initNextClause(query);
-            query.append("NOT s.stateName IN (\'").append(excludes.get(0)).append('\'');
-            for (int i = 1; i < excludes.size(); i++) {
-                query.append(",").append('\'').append(excludes.get(1)).append('\'');
-            }
-            query.append(')');
+            query.append("NOT s.stateName IN (:excludes)");
+            parameters.put("excludes", excludes);
         }
-        log.debug("Query '{}'", query);
-        return query.toString();
+
+        if (startDate != null) {
+            initNextClause(query);
+            query.append("s.date > :startDate");
+            parameters.put("startDate", startDate);
+        }
+
+        if (endDate != null) {
+            initNextClause(query);
+            query.append("s.date < :endDate");
+            parameters.put("endDate", endDate);
+        }
+
+        log.debug("Query: '{}' Parameters: '{}'", query, parameters);
+        Query sessionQuery = session.createQuery("SELECT s FROM State s " + query.toString());
+        for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
+            if (parameter.getValue() instanceof Collection) {
+                sessionQuery.setParameterList(parameter.getKey(), (Collection) parameter.getValue());
+            } else {
+                sessionQuery.setParameter(parameter.getKey(), parameter.getValue());
+            }
+        }
+        return sessionQuery;
     }
 
     private void initNextClause(StringBuilder query) {

@@ -59,7 +59,7 @@ public class TestHibernatedStateManager extends TestCase {
 
         //Check element is inserted as expected
         List<Entity> entities = hibernatedStateManager.listEntities();
-        List<State> states = hibernatedStateManager.listStates(false, null, null);
+        List<State> states = hibernatedStateManager.listStates(false, null, null, null, null);
         assertEquals(1, entities.size());
         assert(contains(entities, "test"));
         assertEquals(1, states.size());
@@ -94,7 +94,7 @@ public class TestHibernatedStateManager extends TestCase {
         HibernatedStateManager hibernatedStateManager = new HibernatedStateManager();
 
         // List all states
-        List<State> states = hibernatedStateManager.listStates(false, null, null);
+        List<State> states = hibernatedStateManager.listStates(false, null, null, null, null);
 
         // Check them
         assertEquals(7, states.size());
@@ -107,7 +107,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertTrue(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         // List states for file1
-        states = hibernatedStateManager.listStates("file1", false, null, null);
+        states = hibernatedStateManager.listStates("file1", false, null, null, null, null);
 
         // Check them
         assertEquals(4, states.size());
@@ -120,7 +120,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         // List all state1 states
-        states = hibernatedStateManager.listStates(false, Arrays.asList(new String[]{"state1"}), null);
+        states = hibernatedStateManager.listStates(false, Arrays.asList(new String[]{"state1"}), null, null, null);
 
         // Check them
         assertEquals(4, states.size());
@@ -133,7 +133,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertTrue(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         // List all NOT state2 states
-        states = hibernatedStateManager.listStates(false, null, Arrays.asList(new String[]{"state2"}));
+        states = hibernatedStateManager.listStates(false, null, Arrays.asList(new String[]{"state2"}), null, null);
 
         // Check them
         assertEquals(4, states.size());
@@ -147,7 +147,7 @@ public class TestHibernatedStateManager extends TestCase {
 
         // List all state1 and state2 states and NOT state1 (i.e. state2)
         states = hibernatedStateManager.listStates(false, Arrays.asList(new String[]{"state1", "state2"}),
-                                                             Arrays.asList(new String[]{"state1"}));
+                                                             Arrays.asList(new String[]{"state1"}), null, null);
 
         //Check them
         assertEquals(3, states.size());
@@ -160,7 +160,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         // List last states of all entities
-        states = hibernatedStateManager.listStates(true, null, null);
+        states = hibernatedStateManager.listStates(true, null, null, null, null);
 
         //Check them
         assertEquals(2, states.size());
@@ -173,7 +173,7 @@ public class TestHibernatedStateManager extends TestCase {
         assertTrue(contains(states, "comp2", new Date(6000), "state1", "file2"));
 
         // List last state of file1
-        states = hibernatedStateManager.listStates("file1", true, null, null);
+        states = hibernatedStateManager.listStates("file1", true, null, null, null, null);
 
         //Check them
         assertEquals(1, states.size());
@@ -184,6 +184,32 @@ public class TestHibernatedStateManager extends TestCase {
         assertFalse(contains(states, "comp1", new Date(4000), "state1", "file2"));
         assertFalse(contains(states, "comp1", new Date(5000), "state2", "file2"));
         assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
+
+        // List states between 999 and 2001 seconds after epoch
+        states = hibernatedStateManager.listStates(false, null, null, new Date(999), new Date(2001));
+
+        //Check them
+        assertEquals(2, states.size());
+        assertFalse(contains(states, "comp1", new Date(0), "state1", "file1"));
+        assertTrue(contains(states, "comp1", new Date(1000), "state2", "file1"));
+        assertTrue(contains(states, "comp2", new Date(2000), "state1", "file1"));
+        assertFalse(contains(states, "comp2", new Date(3000), "state2", "file1"));
+        assertFalse(contains(states, "comp1", new Date(4000), "state1", "file2"));
+        assertFalse(contains(states, "comp1", new Date(5000), "state2", "file2"));
+        assertFalse(contains(states, "comp2", new Date(6000), "state1", "file2"));
+
+        // List states after 3001 seconds after epoch
+        states = hibernatedStateManager.listStates(false, null, null, new Date(3001), null);
+
+        //Check them
+        assertEquals(3, states.size());
+        assertFalse(contains(states, "comp1", new Date(0), "state1", "file1"));
+        assertFalse(contains(states, "comp1", new Date(1000), "state2", "file1"));
+        assertFalse(contains(states, "comp2", new Date(2000), "state1", "file1"));
+        assertFalse(contains(states, "comp2", new Date(3000), "state2", "file1"));
+        assertTrue(contains(states, "comp1", new Date(4000), "state1", "file2"));
+        assertTrue(contains(states, "comp1", new Date(5000), "state2", "file2"));
+        assertTrue(contains(states, "comp2", new Date(6000), "state1", "file2"));
     }
 
     private boolean contains(List<State> states, String component, Date date, String state1, String file) {
@@ -260,60 +286,4 @@ public class TestHibernatedStateManager extends TestCase {
             }
         }
     }
-
-    /*    public static void main(String[] args) {
-        TestHibernatedStateManager registrar = new TestHibernatedStateManager();
-
-        if (args[0].equals("store")) {
-            registrar.registerState(args[1], "component", "statename");
-        } else if (args[0].equals("listAll")) {
-            List<State> states = registrar.listStates();
-            for (State theState : states) {
-                System.out.println(
-                        "Name: " + theState.getName() + " Time: " + theState
-                                .getDate());
-            }
-        } else if (args[0].equals("list")) {
-            List<State> states = registrar.listStates(args[1]);
-            for (State theState : states) {
-                System.out.println(
-                        "Name: " + theState.getName() + " Time: " + theState
-                                .getDate());
-            }
-        }
-
-        HibernateUtil.getSessionFactory().close();
-    }
-
-    private void registerState(String name, String component,
-                               String stateName) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-
-        State state = new State();
-        state.setName(name);
-        state.setComponent(component);
-        state.setState(stateName);
-        state.setDate(new Date());
-
-        session.save(state);
-        session.getTransaction().commit();
-    }
-
-    private List<State> listStates() {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        List result = session.createQuery("from State").list();
-        session.getTransaction().commit();
-        return result;
-    }
-
-    private List<State> listStates(String name) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        List result = session
-                .createQuery("from State where name = '" + name + "'").list();
-        session.getTransaction().commit();
-        return result;
-    }*/
 }
