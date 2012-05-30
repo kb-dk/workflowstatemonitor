@@ -24,32 +24,18 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A state manager backed by a hibernated database.
- * This class is annotated to be exposed as a REST webservice.
- */
-@Path("/")
+/** A state manager backed by a hibernated database. */
 public class HibernatedStateManager implements StateManager {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    @POST
-    @Path("states/{entityName}/")
-    @Consumes("text/xml")
-    public void addState(@PathParam("entityName") String entityName, State state) {
+    public void addState(String entityName, State state) {
         try {
             log.trace("Enter addState(entityName='{}',state='{}')", entityName, state);
             Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -83,9 +69,6 @@ public class HibernatedStateManager implements StateManager {
     }
 
     @Override
-    @GET
-    @Path("entities/")
-    @Produces({"text/xml", "application/json"})
     public List<Entity> listEntities() {
         try {
             log.trace("Enter listEntities()");
@@ -110,15 +93,8 @@ public class HibernatedStateManager implements StateManager {
     }
 
     @Override
-    @GET
-    @Path("states/{entityName}/")
-    @Produces({"text/xml", "application/json"})
-    public List<State> listStates(@PathParam("entityName") String entityName,
-                                  @QueryParam("onlyLast") boolean onlyLast,
-                                  @QueryParam("includes") List<String> includes,
-                                  @QueryParam("excludes") List<String> excludes,
-                                  @QueryParam("startDate") Date startDate,
-                                  @QueryParam("endDate") Date endDate) {
+    public List<State> listStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes,
+                                  Date startDate, Date endDate) {
         try {
             log.trace("Enter listStates(entityName='{}')", entityName);
             List<State> states = queryStates(entityName, onlyLast, includes, excludes, startDate, endDate);
@@ -131,14 +107,8 @@ public class HibernatedStateManager implements StateManager {
     }
 
     @Override
-    @GET
-    @Path("states/")
-    @Produces({"text/xml", "application/json"})
-    public List<State> listStates(@QueryParam("onlyLast") boolean onlyLast,
-                                  @QueryParam("includes") List<String> includes,
-                                  @QueryParam("excludes") List<String> excludes,
-                                  @QueryParam("startDate") Date startDate,
-                                  @QueryParam("endDate") Date endDate) {
+    public List<State> listStates(boolean onlyLast, List<String> includes, List<String> excludes, Date startDate,
+                                  Date endDate) {
         try {
             log.trace("Enter listStates(onlyLast='{}', includes='{}', excludes='{}')",
                       new Object[]{onlyLast, includes, excludes});
@@ -171,7 +141,7 @@ public class HibernatedStateManager implements StateManager {
     }
 
     private Query buildQuery(Session session, String entityName, boolean onlyLast, List<String> includes,
-                              List<String> excludes, Date startDate, Date endDate) {
+                             List<String> excludes, Date startDate, Date endDate) {
         StringBuilder query = new StringBuilder();
         Map<String, Object> parameters = new HashMap<String, Object>();
         //TODO: Escape SQL
