@@ -41,8 +41,14 @@ public class HibernatedStateManagerWebservice extends HibernatedStateManager {
                                   @QueryParam("excludes") List<String> excludes,
                                   @QueryParam("startDate") String startDateString,
                                   @QueryParam("endDate") String endDateString) {
-        Date startDate = javax.xml.bind.DatatypeConverter.parseDateTime(startDateString).getTime();
-        Date endDate = javax.xml.bind.DatatypeConverter.parseDateTime(endDateString).getTime();
+        Date startDate = null;
+        if (startDateString != null && !startDateString.isEmpty()) {
+            startDate = javax.xml.bind.DatatypeConverter.parseDateTime(startDateString).getTime();
+        }
+        Date endDate = null;
+        if (endDateString != null && !endDateString.isEmpty()) {
+            endDate = javax.xml.bind.DatatypeConverter.parseDateTime(endDateString).getTime();
+        }
         return super.listStates(entityName, onlyLast, includes, excludes, startDate,
                                 endDate);
     }
@@ -55,8 +61,14 @@ public class HibernatedStateManagerWebservice extends HibernatedStateManager {
                                   @QueryParam("excludes") List<String> excludes,
                                   @QueryParam("startDate") String startDateString,
                                   @QueryParam("endDate") String endDateString) {
-        Date startDate = javax.xml.bind.DatatypeConverter.parseDateTime(startDateString).getTime();
-        Date endDate = javax.xml.bind.DatatypeConverter.parseDateTime(endDateString).getTime();
+        Date startDate = null;
+        if (startDateString != null && !startDateString.isEmpty()) {
+            startDate = javax.xml.bind.DatatypeConverter.parseDateTime(startDateString).getTime();
+        }
+        Date endDate = null;
+        if (endDateString != null && !endDateString.isEmpty()) {
+            endDate = javax.xml.bind.DatatypeConverter.parseDateTime(endDateString).getTime();
+        }
         return super.listStates(onlyLast, includes, excludes, startDate,
                                 endDate);
     }
