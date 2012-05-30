@@ -14,19 +14,29 @@
         <dependency>
             <groupId>dk.statsbiblioteket.mediaplatform</groupId>
             <artifactId>statemonitor</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.mediaplatform</groupId>
             <artifactId>model</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <dependency>
@@ -39,11 +49,6 @@
             <groupId>janino</groupId>
             <artifactId>janino</artifactId>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <dependency>
@@ -61,16 +66,12 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
@@ -96,7 +97,7 @@
                                 -->
                                 <configuration>
                                     <target>
-                                        <property name="application_name" value="${parent.artifactId}" />
+                                        <property name="application_name" value="${project.parent.artifactId}" />
                                         <property name="remote_warfile" value="~/${application_name}/${application_name}.war" />
                                         <property name="tomcat" value="tomcat02"/>
                                         <property name="keyfile" value="${env.sbprojects_canopus_keyfile}" />
