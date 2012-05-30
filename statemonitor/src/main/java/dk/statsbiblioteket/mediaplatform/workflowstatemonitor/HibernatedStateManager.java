@@ -144,7 +144,6 @@ public class HibernatedStateManager implements StateManager {
                              List<String> excludes, Date startDate, Date endDate) {
         StringBuilder query = new StringBuilder();
         Map<String, Object> parameters = new HashMap<String, Object>();
-        //TODO: Escape SQL
         if (entityName != null) {
             initNextClause(query);
             query.append("s.entity.name = :entityName");
@@ -170,7 +169,7 @@ public class HibernatedStateManager implements StateManager {
 
         if (startDate != null) {
             initNextClause(query);
-            query.append("s.date > :startDate");
+            query.append("s.date >= :startDate");
             parameters.put("startDate", startDate);
         }
 
