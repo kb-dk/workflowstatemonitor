@@ -28,6 +28,6 @@
         <id name="id" column="ENTITY_ID">
             <generator class="native"/>
         </id>
-        <property name="name"/>
+        <property name="name" index="name_index"/>
     </class>
 </hibernate-mapping>

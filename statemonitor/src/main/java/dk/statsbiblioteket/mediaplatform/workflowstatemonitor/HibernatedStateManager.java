@@ -180,7 +180,7 @@ public class HibernatedStateManager implements StateManager {
         }
 
         log.debug("Query: '{}' Parameters: '{}'", query, parameters);
-        Query sessionQuery = session.createQuery("SELECT s FROM State s " + query.toString());
+        Query sessionQuery = session.createQuery("SELECT s FROM State s " + query.toString() + " ORDER BY s.date DESC");
         for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
             if (parameter.getValue() instanceof Collection) {
                 sessionQuery.setParameterList(parameter.getKey(), (Collection) parameter.getValue());
