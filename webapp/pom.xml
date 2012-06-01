@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>workflowstatemonitor</artifactId>
         <groupId>dk.statsbiblioteket.mediaplatform</groupId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
@@ -99,39 +98,31 @@
                                     <target>
                                         <property name="application_name" value="${project.parent.artifactId}" />
                                         <property name="remote_warfile" value="~/${application_name}/${application_name}.war" />
-                                        <property name="tomcat" value="tomcat02"/>
+                                        <property name="tomcat" value="tomcat02" />
                                         <property name="keyfile" value="${env.sbprojects_canopus_keyfile}" />
                                          <!--
                                         Kill tomcat (with extreme prejudice)
                                         -->
-                                        <sshexec host="canopus" failonerror="false" username="yousee" keyfile="${keyfile}"  command="export JAVA_HOME=/usr/java/jdk1.6.0_32/ ; ~/${tomcat}/sbbin/tomcat-init.sh stop"/>
-                                        <sleep seconds="5"/>
-                                        <sshexec host="canopus" failonerror="false" username="yousee" keyfile="${keyfile}"  command="export JAVA_HOME=/usr/java/jdk1.6.0_32/ ; ~/${tomcat}/sbbin/tomcat-init.sh KILL"/>
+                                        <sshexec host="canopus" failonerror="false" username="yousee" keyfile="${keyfile}" command="export JAVA_HOME=/usr/java/jdk1.6.0_32/ ; ~/${tomcat}/sbbin/tomcat-init.sh stop" />
+                                        <sleep seconds="5" />
+                                        <sshexec host="canopus" failonerror="false" username="yousee" keyfile="${keyfile}" command="export JAVA_HOME=/usr/java/jdk1.6.0_32/ ; ~/${tomcat}/sbbin/tomcat-init.sh KILL" />
                                         <!--
                                         deploy the warfile
                                         -->
-                                        <scp file="${project.build.directory}/${project.artifactId}-${project.version}.war"
-                                             remoteToFile="yousee@canopus:${remote_warfile}"
-                                             keyfile="${keyfile}"/>
+                                        <scp file="${project.build.directory}/${project.artifactId}-${project.version}.war" remoteToFile="yousee@canopus:${remote_warfile}" keyfile="${keyfile}" />
                                         <!--
                                            Check out a clean copy of the configuration files from git.
                                         -->
                                         <exec command="rm -rf ${project.build.directory}/Medieplatform-config " />
-                                        <exec command="git clone  https://${env.sbprojects_git_username}:${env.sbprojects_git_password}@sbprojects.statsbiblioteket.dk/fisheye/git/Medieplatform-config.git ${project.build.directory}/Medieplatform-config "/>
+                                        <exec command="git clone https://${env.sbprojects_git_username}:${env.sbprojects_git_password}@sbprojects.statsbiblioteket.dk/fisheye/git/Medieplatform-config.git ${project.build.directory}/Medieplatform-config " />
                                         <!--
                                         deploy project-specific configuration files
                                         -->
-                                        <scp file="${project.build.directory}/Medieplatform-config/${application_name}/hibernate.cfg.xml"
-                                             toDir="yousee@canopus:~/${application_name}"
-                                             keyfile="${keyfile}"/>
-                                        <scp file="${project.build.directory}/Medieplatform-config/${application_name}/logback.xml"
-                                             toDir="yousee@canopus:~/${application_name}"
-                                             keyfile="${keyfile}"/>
-                                        <scp file="${project.build.directory}/Medieplatform-config/${application_name}/${application_name}.xml"
-                                             toDir="yousee@canopus:~/${tomcat}/conf/Catalina/localhost"
-                                             keyfile="${keyfile}"/>
+                                        <scp file="${project.build.directory}/Medieplatform-config/${application_name}/hibernate.cfg.xml" toDir="yousee@canopus:~/${application_name}" keyfile="${keyfile}" />
+                                        <scp file="${project.build.directory}/Medieplatform-config/${application_name}/logback.xml" toDir="yousee@canopus:~/${application_name}" keyfile="${keyfile}" />
+                                        <scp file="${project.build.directory}/Medieplatform-config/${application_name}/${application_name}.xml" toDir="yousee@canopus:~/${tomcat}/conf/Catalina/localhost" keyfile="${keyfile}" />
                                         <!-- Restart tomcat -->
-                                        <sshexec host="canopus" username="yousee" keyfile="${keyfile}"  command="export JAVA_HOME=/usr/java/jdk1.6.0_32/ ; ~/${tomcat}/sbbin/tomcat-init.sh start"/>
+                                        <sshexec host="canopus" username="yousee" keyfile="${keyfile}" command="export JAVA_HOME=/usr/java/jdk1.6.0_32/ ; ~/${tomcat}/sbbin/tomcat-init.sh start" />
                                     </target>
                                 </configuration>
                                 <goals>
