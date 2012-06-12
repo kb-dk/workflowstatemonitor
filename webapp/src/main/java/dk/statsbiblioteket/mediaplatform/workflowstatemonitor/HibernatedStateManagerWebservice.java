@@ -19,9 +19,10 @@ public class HibernatedStateManagerWebservice extends HibernatedStateManager {
     @POST
     @Path("states/{entityName}/")
     @Consumes({"text/xml", "application/json"})
-    public void addState(@PathParam("entityName") String entityName, State state) {
-        super.addState(entityName,
-                       state);
+    @Produces({"text/xml", "application/json"})
+    public List<State> addState(@PathParam("entityName") String entityName, State state,
+                                @QueryParam("preservedStates") List<String> preservedStates) {
+        return super.addState(entityName, state, preservedStates);
     }
 
     @Override

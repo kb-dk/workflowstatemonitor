@@ -55,18 +55,103 @@ public class TestHibernatedStateManager extends TestCase {
         state.setDate(new Date(1000));
         state.setStateName("stat");
         HibernatedStateManager hibernatedStateManager = new HibernatedStateManager();
-        hibernatedStateManager.addState("test", state);
+        List<State> result = hibernatedStateManager.addState("test", state, null);
+
+        //Check the result is as expected
+        assertEquals(1, result.size());
+        assertEquals("stat", result.get(0).getStateName());
+        assertEquals("message", result.get(0).getMessage());
+        assertEquals("comp", result.get(0).getComponent());
+        assertEquals(new Date(1000), result.get(0).getDate());
 
         //Check element is inserted as expected
         List<Entity> entities = hibernatedStateManager.listEntities();
         List<State> states = hibernatedStateManager.listStates(false, null, null, null, null);
         assertEquals(1, entities.size());
-        assert(contains(entities, "test"));
+        assertTrue(contains(entities, "test"));
         assertEquals(1, states.size());
         assertEquals("stat", states.get(0).getStateName());
         assertEquals("message", states.get(0).getMessage());
         assertEquals("comp", states.get(0).getComponent());
         assertEquals(new Date(1000), states.get(0).getDate());
+
+
+        //Insert another element preserving the state "ha" (not found)
+        state = new State();
+        state.setComponent("comp");
+        state.setMessage("message");
+        state.setDate(new Date(2000));
+        state.setStateName("stat");
+        result = hibernatedStateManager.addState("test", state, Arrays.asList("ha"));
+
+        //Check the result is as expected
+        assertEquals(1, result.size());
+        assertEquals("stat", result.get(0).getStateName());
+        assertEquals("message", result.get(0).getMessage());
+        assertEquals("comp", result.get(0).getComponent());
+        assertEquals(new Date(2000), result.get(0).getDate());
+
+        //Check element is inserted as expected
+        entities = hibernatedStateManager.listEntities();
+        states = hibernatedStateManager.listStates(false, null, null, null, null);
+        assertEquals(1, entities.size());
+        assertTrue(contains(entities, "test"));
+        assertEquals(2, states.size());
+        assertEquals("stat", states.get(0).getStateName());
+        assertEquals("message", states.get(0).getMessage());
+        assertEquals("comp", states.get(0).getComponent());
+        assertEquals(new Date(2000), states.get(0).getDate());
+        assertEquals("stat", states.get(1).getStateName());
+        assertEquals("message", states.get(1).getMessage());
+        assertEquals("comp", states.get(1).getComponent());
+        assertEquals(new Date(1000), states.get(1).getDate());
+
+
+        //Insert another element preserving the state "stat" (this time found!!)
+        state = new State();
+        state.setComponent("compp");
+        state.setMessage("message1");
+        state.setDate(new Date(3000));
+        state.setStateName("ha");
+        result = hibernatedStateManager.addState("test", state, Arrays.asList("stat"));
+
+        //Check the result is as expected
+        assertEquals(2, result.size());
+        assertEquals("ha", result.get(0).getStateName());
+        assertEquals("message1", result.get(0).getMessage());
+        assertEquals("compp", result.get(0).getComponent());
+        assertEquals(new Date(3000), result.get(0).getDate());
+        assertEquals("stat", result.get(1).getStateName());
+        assertEquals("message", result.get(1).getMessage());
+        assertEquals("comp", result.get(1).getComponent());
+        assertTrue(result.get(1).getDate().getTime()+1000 > System.currentTimeMillis());
+        assertTrue(result.get(1).getDate().getTime() <= System.currentTimeMillis());
+
+        //Check element is inserted as expected
+        entities = hibernatedStateManager.listEntities();
+        states = hibernatedStateManager.listStates(false, null, null, null, null);
+        assertEquals(1, entities.size());
+        assertTrue(contains(entities, "test"));
+        assertEquals(4, states.size());
+        assertEquals("stat", states.get(0).getStateName());
+        assertEquals("message", states.get(0).getMessage());
+        assertEquals("comp", states.get(0).getComponent());
+        assertTrue(states.get(0).getDate().getTime()+1000 > System.currentTimeMillis());
+        assertTrue(states.get(0).getDate().getTime() <= System.currentTimeMillis());
+        assertEquals("ha", states.get(1).getStateName());
+        assertEquals("message1", states.get(1).getMessage());
+        assertEquals("compp", states.get(1).getComponent());
+        assertEquals(new Date(3000), states.get(1).getDate());
+        assertEquals("stat", states.get(2).getStateName());
+        assertEquals("message", states.get(2).getMessage());
+        assertEquals("comp", states.get(2).getComponent());
+        assertEquals(new Date(2000), states.get(2).getDate());
+        assertEquals("stat", states.get(3).getStateName());
+        assertEquals("message", states.get(3).getMessage());
+        assertEquals("comp", states.get(3).getComponent());
+        assertEquals(new Date(1000), states.get(3).getDate());
+
+
     }
 
     @Test
@@ -229,37 +314,37 @@ public class TestHibernatedStateManager extends TestCase {
         state1.setComponent("comp1");
         state1.setDate(new Date(0));
         state1.setStateName("state1");
-        hibernatedStateManager.addState("file1", state1);
+        hibernatedStateManager.addState("file1", state1, null);
         State state2 = new State();
         state2.setComponent("comp1");
         state2.setDate(new Date(1000));
         state2.setStateName("state2");
-        hibernatedStateManager.addState("file1", state2);
+        hibernatedStateManager.addState("file1", state2, null);
         State state3 = new State();
         state3.setComponent("comp2");
         state3.setDate(new Date(2000));
         state3.setStateName("state1");
-        hibernatedStateManager.addState("file1", state3);
+        hibernatedStateManager.addState("file1", state3, null);
         State state4 = new State();
         state4.setComponent("comp2");
         state4.setDate(new Date(3000));
         state4.setStateName("state2");
-        hibernatedStateManager.addState("file1", state4);
+        hibernatedStateManager.addState("file1", state4, null);
         State state5 = new State();
         state5.setComponent("comp1");
         state5.setDate(new Date(4000));
         state5.setStateName("state1");
-        hibernatedStateManager.addState("file2", state5);
+        hibernatedStateManager.addState("file2", state5, null);
         State state6 = new State();
         state6.setComponent("comp1");
         state6.setDate(new Date(5000));
         state6.setStateName("state2");
-        hibernatedStateManager.addState("file2", state6);
+        hibernatedStateManager.addState("file2", state6, null);
         State state7 = new State();
         state7.setComponent("comp2");
         state7.setDate(new Date(6000));
         state7.setStateName("state1");
-        hibernatedStateManager.addState("file2", state7);
+        hibernatedStateManager.addState("file2", state7, null);
     }
 
     public void clearTestDB() throws Exception {

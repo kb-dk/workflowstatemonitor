@@ -24,6 +24,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,25 +36,56 @@ public class HibernatedStateManager implements StateManager {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void addState(String entityName, State state) {
+    public List<State> addState(String entityName, State state, List<String> preservedStates) {
         try {
-            log.trace("Enter addState(entityName='{}',state='{}')", entityName, state);
+            List<State> result = new ArrayList<State>();
+            log.trace("Enter addState(entityName='{}',state='{}',preservedStates='{}')",
+                      new Object[]{entityName, state, preservedStates});
             Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             try {
                 session.beginTransaction();
 
-                Entity entity = (Entity) session.createQuery("from Entity where name = '" + entityName + "'")
+                // Get or create entity in database
+                Query entityQuery = session.createQuery("from Entity where name = :entityName");
+                entityQuery.setParameter("entityName", entityName);
+                Entity entity = (Entity) entityQuery
                         .uniqueResult();
                 if (entity == null) {
                     entity = new Entity();
                     entity.setName(entityName);
                     session.save(entity);
                 }
+
+                // Set entity and date in state
                 state.setEntity(entity);
                 if (state.getDate() == null) {
                     state.setDate(new Date());
                 }
+
+                // See if we have a preserved state now
+                State preservedState = null;
+                if (preservedStates != null && !preservedStates.isEmpty()) {
+                    Query preservedStateQuery = session.createQuery("from State s where s.date = (SELECT MAX(s2.date) FROM State s2 WHERE s.entity.id = s2.entity.id) AND s.stateName IN :preservedStates");
+                    preservedStateQuery.setParameterList("preservedStates", preservedStates);
+                    preservedState = (State) preservedStateQuery.uniqueResult();
+                }
+
+                // Save the given state
                 session.save(state);
+                result.add(state);
+
+                // If there was a preserved state, readd it with the current date
+                if (preservedState != null) {
+                    State represervedState = new State();
+                    represervedState.setDate(new Date());
+                    represervedState.setMessage(preservedState.getMessage());
+                    represervedState.setComponent(preservedState.getComponent());
+                    represervedState.setEntity(preservedState.getEntity());
+                    represervedState.setStateName(preservedState.getStateName());
+                    session.save(represervedState);
+                    result.add(represervedState);
+                }
+
                 session.getTransaction().commit();
                 log.debug("Added state '{}'", state);
             } finally {
@@ -61,9 +93,12 @@ public class HibernatedStateManager implements StateManager {
                     session.close();
                 }
             }
-            log.trace("Exit addState(entityName='{}',state='{}')", entityName, state);
+            log.trace("Exit addState(entityName='{}',state='{}',preservedStates='{} -> {}')",
+                      new Object[]{entityName, state, preservedStates, result});
+            return result;
         } catch (RuntimeException e) {
-            log.error("Failed addState(entityName='{}',state='{}')", new Object[]{entityName, state, e});
+            log.error("Failed addState(entityName='{}',state='{}',preservedStates='{}')",
+                      new Object[]{entityName, state, preservedStates, e});
             throw e;
         }
     }
