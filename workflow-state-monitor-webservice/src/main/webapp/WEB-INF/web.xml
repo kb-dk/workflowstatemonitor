@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Workflow state monitor
+  %%
+  Copyright (C) 2012 The State and University Library, Denmark
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <display-name>workflowstatemonitor</display-name>
+    <description>Workflow State Monitor</description>
+
+    <env-entry>
+        <env-entry-name>workflowstatemonitor/logback</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>logback-default.xml</env-entry-value>
+    </env-entry>
+
+    <env-entry>
+        <env-entry-name>workflowstatemonitor/hibernate</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>hibernate.cfg-default.xml</env-entry-value>
+    </env-entry>
+
+    <servlet>
+        <servlet-name>workflowstatemonitor</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>dk.statsbiblioteket.medieplatform.workflowstatemonitor</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>workflowstatemonitor</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+</web-app>

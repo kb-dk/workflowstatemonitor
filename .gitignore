@@ -1,10 +1,10 @@
 target/
-model/target
-statemonitor/target
-webapp/target
+workflow-state-monitor-model/target
+workflow-state-monitor-statemonitor/target
+workflow-state-monitor-webservice/target
 .idea/
 workflowstatemonitor.i*
 atlassian-ide-plugin.xml
-model/model.i*
-statemonitor/statemonitor.i*
-webapp/webapp.i*
+workflow-state-monitor-model/workflow-state-monitor-model.i*
+workflow-state-monitor-statemonitor/workflow-state-monitor-statemonitor.i*
+workflow-state-monitor-webservice/workflow-state-monitor-webservice.i*

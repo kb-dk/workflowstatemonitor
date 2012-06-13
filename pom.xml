@@ -2,13 +2,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dk.statsbiblioteket.mediaplatform</groupId>
-    <artifactId>workflowstatemonitor</artifactId>
+    <groupId>dk.statsbiblioteket.medieplatform</groupId>
+    <artifactId>workflow-state-monitor</artifactId>
     <version>0.6-SNAPSHOT</version>
     <modules>
-        <module>model</module>
-        <module>statemonitor</module>
-        <module>webapp</module>
+        <module>workflow-state-monitor-model</module>
+        <module>workflow-state-monitor-statemonitor</module>
+        <module>workflow-state-monitor-webservice</module>
     </modules>
     <name>Workflow state monitor</name>
     <packaging>pom</packaging>
