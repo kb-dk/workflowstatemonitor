@@ -2,15 +2,15 @@
     <contextName>workflowstatemonitor</contextName>
 
     <appender name="R" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${catalina.base}/logs/${CONTEXT_NAME}.log</File>
+        <File>${user.home}/logs/${CONTEXT_NAME}/${CONTEXT_NAME}.log</File>
 
         <encoder>
-            <pattern>%d [%t] %-5p %c - %m%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${catalina.base}/logs/${CONTEXT_NAME}.log.%i</FileNamePattern>
+            <FileNamePattern>${user.home}/logs/${CONTEXT_NAME}/${CONTEXT_NAME}.log.%i</FileNamePattern>
         </rollingPolicy>
 
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -18,7 +18,7 @@
         </triggeringPolicy>
     </appender>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="R"/>
     </root>
 </included>
