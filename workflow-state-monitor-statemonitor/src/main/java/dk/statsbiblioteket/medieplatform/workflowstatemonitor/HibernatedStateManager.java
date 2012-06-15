@@ -65,8 +65,9 @@ public class HibernatedStateManager implements StateManager {
                 // See if we have a preserved state now
                 State preservedState = null;
                 if (preservedStates != null && !preservedStates.isEmpty()) {
-                    Query preservedStateQuery = session.createQuery("from State s where s.date = (SELECT MAX(s2.date) FROM State s2 WHERE s.entity.id = s2.entity.id) AND s.stateName IN :preservedStates");
+                    Query preservedStateQuery = session.createQuery("from State s where s.date = (SELECT MAX(s2.date) FROM State s2 WHERE s.entity.name=:entityName AND s.entity.id = s2.entity.id) AND s.stateName IN :preservedStates");
                     preservedStateQuery.setParameterList("preservedStates", preservedStates);
+                    preservedStateQuery.setParameter("entityName", entityName);
                     preservedState = (State) preservedStateQuery.uniqueResult();
                 }
 

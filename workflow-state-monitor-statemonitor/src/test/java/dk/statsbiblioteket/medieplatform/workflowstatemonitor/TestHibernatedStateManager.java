@@ -151,7 +151,20 @@ public class TestHibernatedStateManager extends TestCase {
         assertEquals("comp", states.get(3).getComponent());
         assertEquals(new Date(1000), states.get(3).getDate());
 
+        //Insert another element for a different entity preserving the state "stat" (not found!!)
+        state = new State();
+        state.setComponent("compp");
+        state.setMessage("message1");
+        state.setDate(new Date(4000));
+        state.setStateName("ha");
+        result = hibernatedStateManager.addState("test2", state, Arrays.asList("stat"));
 
+        //Check the result is as expected
+        assertEquals(1, result.size());
+        assertEquals("ha", result.get(0).getStateName());
+        assertEquals("message1", result.get(0).getMessage());
+        assertEquals("compp", result.get(0).getComponent());
+        assertEquals(new Date(4000), result.get(0).getDate());
     }
 
     @Test
