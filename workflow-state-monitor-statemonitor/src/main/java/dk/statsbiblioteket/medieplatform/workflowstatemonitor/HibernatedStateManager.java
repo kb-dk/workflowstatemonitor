@@ -41,7 +41,7 @@ public class HibernatedStateManager implements StateManager {
             List<State> result = new ArrayList<State>();
             log.trace("Enter addState(entityName='{}',state='{}',preservedStates='{}')",
                       new Object[]{entityName, state, preservedStates});
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            Session session = HibernateUtil.getSessionFactory().openSession();
             try {
                 session.beginTransaction();
 
@@ -108,7 +108,7 @@ public class HibernatedStateManager implements StateManager {
     public List<Entity> listEntities() {
         try {
             log.trace("Enter listEntities()");
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            Session session = HibernateUtil.getSessionFactory().openSession();
             List<Entity> entities;
             try {
                 session.beginTransaction();
@@ -162,7 +162,7 @@ public class HibernatedStateManager implements StateManager {
     private List<State> queryStates(String entityName, boolean onlyLast, List<String> includes, List<String> excludes,
                                     Date startDate, Date endDate) {
 
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         List<State> states;
         try {
             session.beginTransaction();
