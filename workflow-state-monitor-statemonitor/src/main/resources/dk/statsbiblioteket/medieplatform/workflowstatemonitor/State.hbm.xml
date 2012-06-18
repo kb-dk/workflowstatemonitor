@@ -30,7 +30,7 @@
         </id>
         <property name="component"/>
         <property name="stateName"/>
-        <property name="message"/>
+        <property name="message" type="text"/>
         <property name="date" type="timestamp" index="timestamp_index"/>
         <many-to-one name="entity" column="ENTITY_STATE" class="Entity" lazy="false"/>
     </class>

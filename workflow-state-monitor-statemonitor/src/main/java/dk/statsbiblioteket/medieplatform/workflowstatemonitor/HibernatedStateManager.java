@@ -21,6 +21,7 @@ package dk.statsbiblioteket.medieplatform.workflowstatemonitor;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +90,12 @@ public class HibernatedStateManager implements StateManager {
 
                 session.getTransaction().commit();
                 log.debug("Added state '{}'", state);
+            } catch (RuntimeException e) {
+                Transaction transaction = session.getTransaction();
+                if (transaction != null && transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw e;
             } finally {
                 if (session.isOpen()) {
                     session.close();

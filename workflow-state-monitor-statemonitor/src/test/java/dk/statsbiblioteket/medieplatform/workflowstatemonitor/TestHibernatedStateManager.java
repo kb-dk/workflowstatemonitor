@@ -165,6 +165,33 @@ public class TestHibernatedStateManager extends TestCase {
         assertEquals("message1", result.get(0).getMessage());
         assertEquals("compp", result.get(0).getComponent());
         assertEquals(new Date(4000), result.get(0).getDate());
+
+        //Insert a loooong state
+        state = new State();
+        state.setComponent("comp");
+        char[] chars = new char[10000];
+        Arrays.fill(chars, 'A');
+        String message = new String(chars);
+        state.setMessage(message);
+        state.setDate(new Date(1000));
+        state.setStateName("stat");
+        result = hibernatedStateManager.addState("testentity", state, null);
+
+        //Check the result is as expected
+        assertEquals(1, result.size());
+        assertEquals("stat", result.get(0).getStateName());
+        assertEquals(message, result.get(0).getMessage());
+        assertEquals("comp", result.get(0).getComponent());
+        assertEquals(new Date(1000), result.get(0).getDate());
+
+        //Check element is inserted as expected
+        states = hibernatedStateManager.listStates("testentity", false, null, null, null, null);
+        assertTrue(contains(entities, "test"));
+        assertEquals(1, states.size());
+        assertEquals("stat", states.get(0).getStateName());
+        assertEquals(message, states.get(0).getMessage());
+        assertEquals("comp", states.get(0).getComponent());
+        assertEquals(new Date(1000), states.get(0).getDate());
     }
 
     @Test
