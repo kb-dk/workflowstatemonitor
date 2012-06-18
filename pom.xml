@@ -4,7 +4,7 @@
 
     <groupId>dk.statsbiblioteket.medieplatform</groupId>
     <artifactId>workflow-state-monitor</artifactId>
-    <version>0.7</version>
+    <version>0.8-SNAPSHOT</version>
     <modules>
         <module>workflow-state-monitor-model</module>
         <module>workflow-state-monitor-statemonitor</module>
