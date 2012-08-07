@@ -32,6 +32,6 @@
         <property name="stateName"/>
         <property name="message" type="text"/>
         <property name="date" type="timestamp" index="timestamp_index"/>
-        <many-to-one name="entity" column="ENTITY_STATE" class="Entity" lazy="false"/>
+        <many-to-one name="entity" column="ENTITY_STATE" class="Entity" lazy="false" index="entity_index"/>
     </class>
 </hibernate-mapping>
